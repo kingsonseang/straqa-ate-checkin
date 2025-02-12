@@ -3,16 +3,11 @@ import logo from "./logo.svg";
 
 export default function Header() {
   return (
-    <header className='w-screen py-6 bg-white shadow-lg shadow-white/20 fixed top-0 left-0'>
+    <header className='w-screen px-4 py-6 bg-white shadow-lg shadow-white/20 fixed top-0 left-0'>
       <nav className='flex items-center justify-between mx-auto max-w-screen-2xl w-full'>
-        <a
-          href='/'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='max-w-[9.6rem] w-full'
-        >
+        <Link to='/' className='max-w-[6.6rem] lg:max-w-[9.6rem] w-full'>
           <img src={logo} alt='Straqa' className='w-full' />
-        </a>
+        </Link>
 
         <Link to='/logout' viewTransition>
           Logout

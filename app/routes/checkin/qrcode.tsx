@@ -41,7 +41,7 @@ export default function QrCode() {
   const [scannedResult, setScannedResult] = useState<string | null>(null);
 
   return (
-    <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
+    <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
       <div className='max-w-2xl mx-auto w-full space-y-8'>
         <div className='text-center space-y-2'>
           <h1 className='text-3xl font-bold text-center'>
@@ -76,7 +76,7 @@ export default function QrCode() {
           <div className='grid gap-3 max-w-96 mx-auto'>
             <Button
               onClick={() =>
-                navigate(`/checkin/ticket?ticketId=${scannedResult}`)
+                navigate(`/checkin/preview?ticketId=${scannedResult}`)
               }
             >
               Continue to preview: {scannedResult}

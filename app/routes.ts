@@ -12,8 +12,8 @@ export default [
   ...prefix("checkin", [
     layout("routes/checkin/checkin-layout.tsx", [
       index("routes/checkin/checkin.tsx"),
-      route("ticket", "routes/checkin/ticket.tsx"),
-      route("ticket/print", "routes/checkin/print.tsx"),
+      route("preview", "routes/checkin/preview.tsx"),
+      route("preview/print", "routes/checkin/print.tsx"),
       route("search", "routes/checkin/search.tsx"),
       route("qrcode", "routes/checkin/qrcode.tsx"),
     ]),

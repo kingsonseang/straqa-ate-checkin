@@ -1,6 +1,7 @@
 import type { Route } from "./+types/search";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -123,7 +124,7 @@ export default function Search() {
   }, [debouncedSearchInput]);
 
   return (
-    <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
+    <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
       <div className='max-w-2xl mx-auto w-full'>
         <div className='text-center space-y-2'>
           <h1 className='text-3xl font-bold text-center'>
@@ -160,7 +161,10 @@ export default function Search() {
               <div className='relative animate-in fade-in-0 zoom-in-95 h-auto'>
                 <CommandList>
                   <div className='absolute top-1.5 z-50 w-full'>
-                    <CommandGroup className='relative h-auto z-50 min-w-[8rem] overflow-hidden rounded-md border shadow-md bg-background'>
+                    <CommandGroup className='relative h-auto z-50 min-w-[8rem] overflow-hidden rounded-xl border shadow-md bg-background'>
+                      {fetcher.state === "idle" && response?.count === 0 && (
+                        <CommandEmpty>No Ticket found.</CommandEmpty>
+                      )}
                       {fetcher.state !== "idle" ? (
                         <div className='h-28 flex items-center justify-center'>
                           <Loader2 className='size-6 animate-spin' />
@@ -175,15 +179,18 @@ export default function Search() {
                                 onSelect={() => {
                                   setSearchInput("");
                                   navigate(
-                                    `/checkin/ticket?ticketId=${ticket.ticketId}`
+                                    `/checkin/preview?ticketId=${ticket.ticketId}`
                                   );
                                 }}
                                 className='flex select-text flex-col cursor-pointer gap-0.5 h-max p-2 px-3 rounded-md aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground items-start'
                                 onMouseDown={(e) => e.preventDefault()}
                               >
                                 <span>
-                                  {ticket?.attendee?.fullName},{" "}
-                                  <span className='text-sm'>
+                                  <span className='font-medium'>
+                                    {ticket?.attendee?.fullName}
+                                  </span>
+                                  ,{" "}
+                                  <span className='text-sm opacity-65'>
                                     {ticket?.attendee?.email}
                                   </span>
                                 </span>

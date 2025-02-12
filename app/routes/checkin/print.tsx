@@ -10,6 +10,7 @@ import html2canvas from "html2canvas";
 import useSWRMutation from "swr/mutation";
 
 import ateLogo from "./ate-logo.svg";
+import { toast } from "sonner";
 
 async function updateTagPickup(
   url: string,
@@ -24,26 +25,35 @@ async function updateTagPickup(
     };
   }
 ) {
-  const ip = await getClientIP();
+  try {
+    const ip = await getClientIP();
 
-  const response = await fetch(
-    `${url}/api/tickets/${arg.ticketId}/tag-pickup`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "x-forwarded-for": arg.ip,
-        Authorization: `Bearer ${arg.accessToken}`,
-      },
-      body: JSON.stringify({ location: arg.location }),
+    const response = await fetch(
+      `${url}/api/tickets/${arg.ticketId}/tag-pickup`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-forwarded-for": arg.ip,
+          Authorization: `Bearer ${arg.accessToken}`,
+        },
+        body: JSON.stringify({ location: arg.location }),
+      }
+    );
+
+    if (!response.ok) {
+      const responseData = await response.json();
+
+      throw new Error(responseData?.message || "Cannot reach server.");
     }
-  );
 
-  if (!response.ok) {
-    throw new Error("Failed to update tag pickup");
+    return response.json();
+  } catch (error: any) {
+    return {
+      is_error: true,
+      message: error?.message || "Failed to update ticket status",
+    };
   }
-
-  return response.json();
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -155,7 +165,7 @@ export default function Print({ loaderData }: Route.ComponentProps) {
   useEffect(() => {
     fetcher.submit(
       { ticketId: loaderData?.ticketId },
-      { action: "/checkin/ticket", method: "post" }
+      { action: "/checkin/preview", method: "post" }
     );
   }, []);
 
@@ -170,12 +180,18 @@ export default function Print({ loaderData }: Route.ComponentProps) {
 
       // 1️⃣ Trigger API update before printing
       const { ticketId, ip, accessToken } = loaderData;
-      await trigger({
+      const res = await trigger({
         ticketId,
         location: "Cafe one, VI, Lagos",
         ip,
         accessToken,
       });
+
+      if (res.is_error) {
+        toast.error(res?.message || "Failed to update ticket status");
+        return;
+      }
+      toast.success(res?.message || "Ticket status updated successfully");
 
       console.log("Generating print image...");
 
@@ -205,7 +221,7 @@ export default function Print({ loaderData }: Route.ComponentProps) {
 
   if (fetcher.state !== "idle") {
     return (
-      <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh flex justify-center items-center'>
+      <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh flex justify-center items-center'>
         <Loading02 className='animate-spin' />
       </main>
     );
@@ -213,7 +229,7 @@ export default function Print({ loaderData }: Route.ComponentProps) {
 
   if (response) {
     return (
-      <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
+      <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
         <div className='max-w-xl mx-auto w-full space-y-12'>
           <div className='text-center space-y-2'>
             <h1 className='text-3xl font-bold text-center'>

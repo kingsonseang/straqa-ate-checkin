@@ -111,79 +111,83 @@ export default function Print({ loaderData }: Route.ComponentProps) {
   useEffect(() => {
     fetcher.submit(
       { ticketId: loaderData?.ticketId },
-      { action: "/checkin/ticket", method: "post" }
+      { action: "/checkin/preview", method: "post" }
     );
   }, []);
 
   if (fetcher.state !== "idle") {
     return (
-      <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh flex justify-center items-center'>
+      <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh flex justify-center items-center'>
         <Loading02 className='animate-spin' />
       </main>
     );
   }
 
-  return (
-    <main className='pt-16 lg:pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
-      <div className='max-w-xl mx-auto w-full space-y-12'>
-        <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold text-center'>
-            Preview Personal Information
-          </h1>
-          <p>Confirm personal details belong to user.</p>
-        </div>
-
-        <div className='p-8 bg-gray-50 rounded-2xl space-y-4'>
-          <div className='grid gap-2'>
-            <Label htmlFor='fullName'>Full Name</Label>
-            <Input
-              id='fullName'
-              name='fullName'
-              value={response?.attendee?.fullName}
-              readOnly
-              className='indent-2'
-            />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input
-              id='email'
-              name='email'
-              value={response?.attendee?.email}
-              readOnly
-              className='indent-2'
-            />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='company'>Company</Label>
-            <Input
-              id='company'
-              name='company'
-              value={response?.company}
-              readOnly
-              className='indent-2'
-            />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='ticketClass'>Ticket Class</Label>
-            <Input
-              id='ticketClass'
-              name='ticketClass'
-              value={response?.ticketClass?.title}
-              readOnly
-              className='indent-2'
-            />
+  if (response) {
+    return (
+      <main className='pt-24 xl:pt-32 pb-4 px-4 lg:px-8 min-h-dvh'>
+        <div className='max-w-xl mx-auto w-full space-y-12'>
+          <div className='text-center space-y-2'>
+            <h1 className='text-3xl font-bold text-center'>
+              Preview Personal Information
+            </h1>
+            <p>Confirm personal details belong to user.</p>
           </div>
 
-          <Link
-            to={`/checkin/ticket/print?ticketId=${loaderData?.ticketId}`}
-            className={buttonVariants()}
-            viewTransition
-          >
-            Continue
-          </Link>
+          <div className='p-8 bg-gray-50 rounded-2xl space-y-4'>
+            <div className='grid gap-2'>
+              <Label htmlFor='fullName'>Full Name</Label>
+              <Input
+                id='fullName'
+                name='fullName'
+                value={response?.attendee?.fullName}
+                readOnly
+                className='indent-2'
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='email'>Email</Label>
+              <Input
+                id='email'
+                name='email'
+                value={response?.attendee?.email}
+                readOnly
+                className='indent-2'
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='company'>Company</Label>
+              <Input
+                id='company'
+                name='company'
+                value={response?.company}
+                readOnly
+                className='indent-2'
+              />
+            </div>
+            <div className='grid gap-2'>
+              <Label htmlFor='ticketClass'>Ticket Class</Label>
+              <Input
+                id='ticketClass'
+                name='ticketClass'
+                value={response?.ticketClass?.title}
+                readOnly
+                className='indent-2'
+              />
+            </div>
+
+            <Link
+              to={`/checkin/preview/print?ticketId=${loaderData?.ticketId}`}
+              className={buttonVariants({
+                className: "h-auto w-full py-3 mt-3",
+              })}
+              viewTransition
+            >
+              Continue
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
+  }
 }
