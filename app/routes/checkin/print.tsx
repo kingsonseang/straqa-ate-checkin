@@ -245,7 +245,7 @@ export default function Print({ loaderData }: Route.ComponentProps) {
               className='w-32 mx-auto'
             />
 
-            <div className='p-6'>
+            <div className='p-6 text-center lg:text-left'>
               <h2 className='font-mono text-5xl'>
                 {response?.attendee?.fullName}
               </h2>
